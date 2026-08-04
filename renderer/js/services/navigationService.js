@@ -570,9 +570,17 @@ function setupEvents() {
     navigationService.currentlyOpenedFile.path = file;
 
     try {
-      const result = await window.franchiseAPI.openFile(file, {
+      const openOptions = {
         schemaDirectory: savedSchemaService.getSchemaPath(),
-      });
+      };
+
+      const selectedOverrides = await promptForFtcOverrides();
+      if (selectedOverrides) {
+        openOptions.gameYearOverride = selectedOverrides.gameYear;
+        openOptions.gameTypeOverride = selectedOverrides.gameType;
+      }
+
+      const result = await window.franchiseAPI.openFile(file, openOptions);
 
       if (result.error) {
         // Schema not found, prompt user to pick one
@@ -777,4 +785,58 @@ function conditionallyShowCheckForUpdatesNotification() {
   if (checkForUpdates === undefined || checkForUpdates === null) {
     updateService.showCheckForUpdatesNotification();
   }
+}
+
+function promptForFtcOverrides() {
+  return new Promise((resolve) => {
+    const underlay = document.getElementById("ftc-override-underlay");
+    const modal = document.getElementById("ftc-override-modal");
+    const confirmBtn = document.getElementById("ftc-override-confirm");
+    const yearSelect = document.getElementById("ftc-game-year");
+    const typeSelect = document.getElementById("ftc-game-type");
+
+    if (!underlay || !modal || !confirmBtn || !yearSelect || !typeSelect) {
+      resolve(null);
+      return;
+    }
+
+    const savedYear = preferencesService.getValue("general.ftcGameYearOverride");
+    const savedType = preferencesService.getValue("general.ftcGameTypeOverride");
+
+    if (savedYear !== undefined && savedYear !== null) {
+      yearSelect.value = String(savedYear);
+    }
+
+    if (savedType) {
+      typeSelect.value = String(savedType);
+    }
+
+    underlay.classList.remove("hidden");
+    modal.classList.remove("hidden");
+
+    async function onConfirm() {
+      confirmBtn.removeEventListener("click", onConfirm);
+
+      const gameYear = parseInt(yearSelect.value, 10);
+      const gameType = typeSelect.value;
+
+      const preferences = preferencesService.get() || {};
+      preferences.general = preferences.general || {};
+      preferences.general.ftcGameYearOverride = gameYear;
+      preferences.general.ftcGameTypeOverride = gameType;
+
+      try {
+        await preferencesService.setAll(preferences);
+      } catch (err) {
+        console.warn("Failed to persist FTC override preferences", err);
+      }
+
+      underlay.classList.add("hidden");
+      modal.classList.add("hidden");
+
+      resolve({ gameYear, gameType });
+    }
+
+    confirmBtn.addEventListener("click", onConfirm);
+  });
 }

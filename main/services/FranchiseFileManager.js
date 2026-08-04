@@ -92,6 +92,20 @@ class FranchiseFileManager {
       settings.schemaOverride = options.schemaOverride;
     }
 
+    if (
+      options.gameYearOverride !== undefined &&
+      options.gameYearOverride !== null
+    ) {
+      settings.gameYearOverride = options.gameYearOverride;
+    }
+
+    if (
+      options.gameTypeOverride !== undefined &&
+      options.gameTypeOverride !== null
+    ) {
+      settings.gameTypeOverride = options.gameTypeOverride;
+    }
+
     return settings;
   }
 

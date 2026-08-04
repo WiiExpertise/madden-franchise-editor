@@ -75,6 +75,43 @@
   <script src="../node_modules/handsontable/dist/handsontable.full.min.js"></script>
   <script src="./js/libs/selectr/selectr.js"></script>
   <script src="js/bundle.js"></script>
+
+  <div class="underlay ftc-override-underlay hidden" id="ftc-override-underlay"></div>
+  <div class="modal ftc-override-modal hidden" id="ftc-override-modal">
+    <div class="modal-header">
+      <h2 class="title">Set File Parameters</h2>
+    </div>
+    <p class="ftc-override-description">
+      This file uses the <strong>franchise-common</strong> format and cannot detect game year or game type
+      automatically. Select values to continue.
+    </p>
+    <div class="ftc-override-fields">
+      <div class="ftc-override-field">
+        <label for="ftc-game-year">Game Year</label>
+        <select id="ftc-game-year" class="ftc-select">
+          <option value="27">Madden / CFB 27</option>
+          <option value="26">Madden 26</option>
+          <option value="25">Madden 25</option>
+          <option value="24">Madden 24</option>
+          <option value="23">Madden 23</option>
+          <option value="22" selected>Madden 22</option>
+          <option value="21">Madden 21</option>
+          <option value="20">Madden 20</option>
+          <option value="19">Madden 19</option>
+        </select>
+      </div>
+      <div class="ftc-override-field">
+        <label for="ftc-game-type">Game Type</label>
+        <select id="ftc-game-type" class="ftc-select">
+          <option value="madden" selected>Madden NFL</option>
+          <option value="college">College Football (CFB)</option>
+        </select>
+      </div>
+    </div>
+    <div class="ftc-override-actions">
+      <button class="btn ftc-override-confirm" id="ftc-override-confirm">Confirm</button>
+    </div>
+  </div>
 </body>
 
 </html>
